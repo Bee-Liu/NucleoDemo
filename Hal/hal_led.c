@@ -73,7 +73,7 @@ void LedMsgInput(unsigned char type, LED_EFFECT_TYPEDEF cmd, unsigned char clr)
 void LED_proc(void)
 {
 
-	BSP_LED_Toggle(LED2);
+	// BSP_LED_Toggle(LED2);
 	unsigned char i;
 	unsigned char cmd;
 	for (i = 0;i < LED_NUM;i++)
@@ -108,7 +108,7 @@ void LED_proc(void)
 			}
 		}
 	}
-	hal_Led1Drive(1);
+	// hal_Led1Drive(1);
 }
 
 static void hal_LedHandle(void)
