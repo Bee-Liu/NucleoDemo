@@ -73,42 +73,42 @@ void LedMsgInput(unsigned char type, LED_EFFECT_TYPEDEF cmd, unsigned char clr)
 void LED_proc(void)
 {
 
-	// BSP_LED_Toggle(LED2);
-	// unsigned char i;
-	// unsigned char cmd;
-	// for (i = 0;i < LED_NUM;i++)
-	// {
-	// 	if ((QueueDataLen(LedCmdBuff[i]) > 0) && (LedLoadFlag[i] == 0))
-	// 	{
-	// 		QueueDataOut(LedCmdBuff[i], &cmd);
-	// 		LedLoadFlag[i] = 1;
-	// 		switch (cmd)
-	// 		{
-	// 		case LED_CLOSE:
-	// 			pLed[i] = (unsigned short*)Led_Close;
-	// 			LedTimer[i] = *(pLed[i] + 1);
-	// 			break;
-	// 		case LED_LIGHT:
-	// 			pLed[i] = (unsigned short*)Led_Light;
-	// 			LedTimer[i] = *(pLed[i] + 1);
-	// 			break;
-	// 		case LED_LIGHT_100MS:
-	// 			pLed[i] = (unsigned short*)Led_Light_100ms;
-	// 			LedTimer[i] = *(pLed[i] + 1);
-	// 			break;
-	// 		case LED_TURN1:
-	// 			pLed[i] = (unsigned short*)Led_Turn1;
-	// 			LedTimer[i] = *(pLed[i] + 1);
-	// 			break;
-	// 		case LED_TURN2:
-	// 			pLed[i] = (unsigned short*)Led_Turn2;
-	// 			LedTimer[i] = *(pLed[i] + 1);
-	// 			break;
+	BSP_LED_Toggle(LED2);
+	unsigned char i;
+	unsigned char cmd;
+	for (i = 0;i < LED_NUM;i++)
+	{
+		if ((QueueDataLen(LedCmdBuff[i]) > 0) && (LedLoadFlag[i] == 0))
+		{
+			QueueDataOut(LedCmdBuff[i], &cmd);
+			LedLoadFlag[i] = 1;
+			switch (cmd)
+			{
+			case LED_CLOSE:
+				pLed[i] = (unsigned short*)Led_Close;
+				LedTimer[i] = *(pLed[i] + 1);
+				break;
+			case LED_LIGHT:
+				pLed[i] = (unsigned short*)Led_Light;
+				LedTimer[i] = *(pLed[i] + 1);
+				break;
+			case LED_LIGHT_100MS:
+				pLed[i] = (unsigned short*)Led_Light_100ms;
+				LedTimer[i] = *(pLed[i] + 1);
+				break;
+			case LED_TURN1:
+				pLed[i] = (unsigned short*)Led_Turn1;
+				LedTimer[i] = *(pLed[i] + 1);
+				break;
+			case LED_TURN2:
+				pLed[i] = (unsigned short*)Led_Turn2;
+				LedTimer[i] = *(pLed[i] + 1);
+				break;
 
-	// 		}
-	// 	}
-	// }
-	//hal_Led1Drive(1);
+			}
+		}
+	}
+	hal_Led1Drive(1);
 }
 
 static void hal_LedHandle(void)
