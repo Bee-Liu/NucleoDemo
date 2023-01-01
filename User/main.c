@@ -3,14 +3,8 @@
 #include "hal_Tim.h"
 
 
-
-
-
-
-
 int main()
 {
-
 	hal_CPUInit();	
 	HAL_Init();
 	OS_TaskInit();
