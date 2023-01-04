@@ -2,6 +2,7 @@
 #include "Os_System.h"
 #include "stm32f4xx_nucleo.h"
 #include "hal_Tim.h"
+#include "hal_pwm.h"
 
 Queue4    LedCmdBuff[LED_NUM]; ///定义一个队列数组为每一个Led外设单独分配一个队列缓存
 
@@ -37,6 +38,7 @@ void Led_init()  //LED初始化函数
 	unsigned char i;
 	BSP_LED_Init(LED2);///LED初始化配置
 
+
 	for (i = 0;i < LED_NUM;i++)
 	{
 		LedLoadFlag[i] = 0;
@@ -44,7 +46,7 @@ void Led_init()  //LED初始化函数
 		LedTimer[i] = *(pLed[i] + 1);
 		QueueEmpty(LedCmdBuff[i]);
 	}
-	hal_CreatTask(T_LED, hal_LedHandle,1 , TIM_START);
+	hal_CreatTask(T_LED, hal_LedHandle, 1, TIM_START);
 	LedMsgInput(LED1, LED_TURN1, 1);
 	LedMsgInput(LED1, LED_TURN2, 0);
 }
@@ -67,47 +69,59 @@ void LedMsgInput(unsigned char type, LED_EFFECT_TYPEDEF cmd, unsigned char clr)
 }
 
 
-
-
-
+uint16_t pulse = 0; // 占空比
 void LED_proc(void)
 {
-
-	// BSP_LED_Toggle(LED2);
-	unsigned char i;
-	unsigned char cmd;
-	for (i = 0;i < LED_NUM;i++)
+	// HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
+	while(pulse < 200)
 	{
-		if ((QueueDataLen(LedCmdBuff[i]) > 0) && (LedLoadFlag[i] == 0))
-		{
-			QueueDataOut(LedCmdBuff[i], &cmd);
-			LedLoadFlag[i] = 1;
-			switch (cmd)
-			{
-			case LED_CLOSE:
-				pLed[i] = (unsigned short*)Led_Close;
-				LedTimer[i] = *(pLed[i] + 1);
-				break;
-			case LED_LIGHT:
-				pLed[i] = (unsigned short*)Led_Light;
-				LedTimer[i] = *(pLed[i] + 1);
-				break;
-			case LED_LIGHT_100MS:
-				pLed[i] = (unsigned short*)Led_Light_100ms;
-				LedTimer[i] = *(pLed[i] + 1);
-				break;
-			case LED_TURN1:
-				pLed[i] = (unsigned short*)Led_Turn1;
-				LedTimer[i] = *(pLed[i] + 1);
-				break;
-			case LED_TURN2:
-				pLed[i] = (unsigned short*)Led_Turn2;
-				LedTimer[i] = *(pLed[i] + 1);
-				break;
+		pulse++;
 
-			}
-		}
+		TIM2->CCR1 = pulse;
+		HAL_Delay(1);
+
 	}
+	while(pulse)
+	{
+		pulse--;
+
+		TIM2->CCR1 = pulse;
+		HAL_Delay(1);
+	}
+	// unsigned char i;
+	// unsigned char cmd;
+	// for (i = 0;i < LED_NUM;i++)
+	// {
+	// 	if ((QueueDataLen(LedCmdBuff[i]) > 0) && (LedLoadFlag[i] == 0))
+	// 	{
+	// 		QueueDataOut(LedCmdBuff[i], &cmd);
+	// 		LedLoadFlag[i] = 1;
+	// 		switch (cmd)
+	// 		{
+	// 		case LED_CLOSE:
+	// 			pLed[i] = (unsigned short*)Led_Close;
+	// 			LedTimer[i] = *(pLed[i] + 1);
+	// 			break;
+	// 		case LED_LIGHT:
+	// 			pLed[i] = (unsigned short*)Led_Light;
+	// 			LedTimer[i] = *(pLed[i] + 1);
+	// 			break;
+	// 		case LED_LIGHT_100MS:
+	// 			pLed[i] = (unsigned short*)Led_Light_100ms;
+	// 			LedTimer[i] = *(pLed[i] + 1);
+	// 			break;
+	// 		case LED_TURN1:
+	// 			pLed[i] = (unsigned short*)Led_Turn1;
+	// 			LedTimer[i] = *(pLed[i] + 1);
+	// 			break;
+	// 		case LED_TURN2:
+	// 			pLed[i] = (unsigned short*)Led_Turn2;
+	// 			LedTimer[i] = *(pLed[i] + 1);
+	// 			break;
+
+	// 		}
+	// 	}
+	// }
 	// hal_Led1Drive(1);
 }
 
@@ -153,4 +167,21 @@ static void hal_Led1Drive(unsigned char sta)
 	{
 		BSP_LED_Off(LED2);
 	}
+}
+
+
+
+void GPIOC_14_Init(void)
+{
+	GPIO_InitTypeDef GPIO_Initstruct;
+
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+
+	GPIO_Initstruct.Pin = GPIO_PIN_10;
+	GPIO_Initstruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_Initstruct.Pull = GPIO_NOPULL;
+	GPIO_Initstruct.Speed = GPIO_SPEED_LOW;
+
+	HAL_GPIO_Init(GPIOC, &GPIO_Initstruct);
+
 }

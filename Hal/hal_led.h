@@ -29,4 +29,5 @@ typedef enum
 void Led_init(void);
 void LED_proc(void);
 void LedMsgInput(unsigned char type,LED_EFFECT_TYPEDEF cmd,unsigned char clr);
+void GPIOC_14_Init(void);
 #endif /* __HAL_LED_H */
